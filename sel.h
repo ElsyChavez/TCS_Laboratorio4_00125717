@@ -142,7 +142,6 @@ void assemblyK(element e,Matrix localK,Matrix &K,int nnodes){
     K.at(index4).at(index3) += localK.at(3).at(2);
     K.at(index4).at(index4) += localK.at(3).at(3);
 
-
 }
 
 void assemblyb(element e,Vector localb,Vector &b){
@@ -179,7 +178,6 @@ void applyDirichlet(mesh &m,Matrix &K,Vector &b){
         }
     }
 }
-
 
 void calculate(Matrix &K, Vector &b, Vector &T){
     cout << "Iniciando calculo de respuesta...\n";
