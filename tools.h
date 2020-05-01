@@ -61,10 +61,10 @@ void leerMallayCondiciones(mesh &m) {
         file.open(filename);
     } while(!file);
 
-    file >> l >> tau >> kappa >> lambda >> ipsilon >> alpha >> delta >> psi >> eta;
+    file >> l >> tau >> kappa >> lambda >> ipsilon >> psi >> alpha >> delta >> eta;
     file >> nnodes >> neltos >> ndirich_u >> ndirich_p;
 
-    m.setParameters(l, tau, kappa, lambda, ipsilon, alpha, delta, psi, eta);
+    m.setParameters(l, tau, kappa, lambda, ipsilon, psi, alpha, delta, eta);
     m.setSizes(nnodes,neltos,ndirich_u+ndirich_p);
     m.createData();
 
