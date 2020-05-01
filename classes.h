@@ -105,8 +105,8 @@ class mesh{
         element *element_list;
         condition *dirichlet_list;
     public:
-        void setParameters(float l, float tau, float kappa, float lambda, float ipsilon, float alpha, 
-        float delta, float psi, float eta) {
+        void setParameters(float l, float tau, float kappa, float lambda, float ipsilon,float psi, float alpha, 
+        float delta, float eta) {
             parameters[ELEMENT_LENGTH]=l;
             parameters[CONST_TAU]= tau;
             parameters[CONST_KAPPA]= kappa;
