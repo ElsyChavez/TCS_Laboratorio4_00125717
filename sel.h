@@ -1,4 +1,4 @@
-void createLocalA(Matrix &A,mesh m) {
+void createLocalA(Matrix &A,mesh m){
     float tau = m.getParameter(CONST_TAU);
     A.at(0).at(0) += -tau/8;  
     A.at(0).at(1) += tau/8;
@@ -6,87 +6,85 @@ void createLocalA(Matrix &A,mesh m) {
     A.at(1).at(1) += tau/8;
 }
 
-void createLocalB(Matrix &B,mesh m) {
-    float l = m.getParameter(ELEMENT_LENGTH);
-    float kappa = m.getParameter(CONST_KAPPA);
-    B.at(0).at(0) += kappa/l;      
-    B.at(0).at(1) += -kappa/l;
-    B.at(1).at(0) += -kappa/l;     
-    B.at(1).at(1) += kappa/l;
+void createLocalC(Matrix &B,mesh m){
+    float alpha = m.getParameter(CONST_ALPHA);
+    B.at(0).at(0) += -3.0*alpha/2;  
+    B.at(0).at(1) += 3.0*alpha/2;
+    B.at(1).at(0) += -3.0*alpha/2;  
+    B.at(1).at(1) += 3.0*alpha/2;
 }
 
-void createLocalC(Matrix &C,mesh m) {
+void createLocalG(Matrix &C,mesh m){
     float lambda = m.getParameter(CONST_LAMBDA);
-    C.at(0).at(0) += -lambda/3;    
+    C.at(0).at(0) += -lambda/3;  
     C.at(0).at(1) += lambda/3;
-    C.at(1).at(0) += -lambda/3;    
+    C.at(1).at(0) += -lambda/3;  
     C.at(1).at(1) += lambda/3;
 }
 
-void createLocalD(Matrix &D,mesh m){
+void createLocalI(Matrix &D,mesh m){
+    float delta = m.getParameter(CONST_DELTA);
+    D.at(0).at(0) += -delta/2.0;  
+    D.at(0).at(1) += delta/2.0;
+    D.at(1).at(0) += -delta/2.0;  
+    D.at(1).at(1) += delta/2.0;
+}
+
+void createLocalP(Matrix &E,mesh m){
+    float l = m.getParameter(ELEMENT_LENGTH);
+    float kappa = m.getParameter(CONST_KAPPA);
+    E.at(0).at(0) += kappa/l;      
+    E.at(0).at(1) += -kappa/l;
+    E.at(1).at(0) += -kappa/l;     
+    E.at(1).at(1) += kappa/l;
+}
+
+void createLocalQ(Matrix &F,mesh m){
     float l = m.getParameter(ELEMENT_LENGTH);
     float ipsilon = m.getParameter(CONST_IPSILON);
-    D.at(0).at(0) += ipsilon/l;      
-    D.at(0).at(1) += -ipsilon/l;
-    D.at(1).at(0) += -ipsilon/l;     
-    D.at(1).at(1) += ipsilon/l;
+    F.at(0).at(0) += ipsilon/l;      
+    F.at(0).at(1) += -ipsilon/l;
+    F.at(1).at(0) += -ipsilon/l;     
+    F.at(1).at(1) += ipsilon/l;
 }
 
-void createLocalE(Matrix &E,mesh m) {
-    float alpha = m.getParameter(CONST_ALPHA);
-    E.at(0).at(0) += -(3*alpha)/2;    
-    E.at(0).at(1) += (3*alpha)/2;
-    E.at(1).at(0) += -(3*alpha)/2;    
-    E.at(1).at(1) += (3*alpha)/2;
-}
-
-void createLocalF(Matrix &F,mesh m) {
-    float delta = m.getParameter(CONST_DELTA);
-    F.at(0).at(0) += -delta/2;    
-    F.at(0).at(1) += delta/2;
-    F.at(1).at(0) += -delta/2;    
-    F.at(1).at(1) += delta/2;
-}
-
-Matrix createLocalK(int element,mesh &m) {
-
-    Matrix K,A,B,C,D,E,F;
+Matrix createLocalK(int element,mesh &m){
+    Matrix K,A,E,C,F,B,D;
 
     zeroes(A,2);
-    zeroes(B,2);
-    zeroes(C,2);
-    zeroes(D,2);
     zeroes(E,2);
+    zeroes(C,2);
     zeroes(F,2);
-
+    zeroes(B,2);
+    zeroes(D,2);
     createLocalA(A,m);
-    createLocalB(B,m);
-    createLocalC(C,m);
-    createLocalD(D,m);
-    createLocalC(E,m);
-    createLocalD(F,m);
+    createLocalP(E,m);
+    createLocalG(C,m);
+    createLocalQ(F,m);
+    createLocalC(B,m);
+    createLocalI(D,m);
 
     Vector row1, row2, row3, row4;
 
-    row1.push_back(A.at(0).at(0)+B.at(0).at(0)); 
-    row1.push_back(A.at(0).at(1)+B.at(0).at(1));
-    row1.push_back(C.at(0).at(0));                  
-    row1.push_back(C.at(0).at(1));
+    row1.push_back(A.at(0).at(0)+E.at(0).at(0)); 
+    row1.push_back(A.at(0).at(1)+E.at(0).at(1));
+    row1.push_back(C.at(0).at(0)+F.at(0).at(0));                  
+    row1.push_back(C.at(0).at(1)+F.at(0).at(1));
 
-    row2.push_back(A.at(1).at(0)+B.at(1).at(0)); 
-    row2.push_back(A.at(1).at(1)+B.at(1).at(1));
-    row2.push_back(C.at(1).at(0)); 
-    row2.push_back(C.at(1).at(1));
+    row2.push_back(A.at(1).at(0)+E.at(1).at(0)); 
+    row2.push_back(A.at(1).at(1)+E.at(1).at(1));
+    row2.push_back(C.at(1).at(0)+F.at(1).at(0)); 
+    row2.push_back(C.at(1).at(1)+F.at(1).at(1));
 
+    row3.push_back(B.at(0).at(0)); 
+    row3.push_back(B.at(0).at(1));
     row3.push_back(D.at(0).at(0)); 
     row3.push_back(D.at(0).at(1));
-    row3.push_back(0); 
-    row3.push_back(0);
 
+    row4.push_back(B.at(1).at(0)); 
+    row4.push_back(B.at(1).at(1));
     row4.push_back(D.at(1).at(0)); 
     row4.push_back(D.at(1).at(1));
-    row4.push_back(0); 
-    row4.push_back(0);
 
     K.push_back(row1); 
     K.push_back(row2); 
@@ -94,20 +92,19 @@ Matrix createLocalK(int element,mesh &m) {
     K.push_back(row4);
 
     return K;
-
 }
 
 Vector createLocalb(int element,mesh &m){
     Vector b;
 
     float psi = m.getParameter(CONST_PSI), 
-    eta = m.getParameter(CONST_ETA),
+    eta = m.getParameter(CONST_ETA), 
     l = m.getParameter(ELEMENT_LENGTH);
     
     b.push_back(psi*l/2); 
     b.push_back(psi*l/2); 
     b.push_back(eta*l/2); 
-    b.push_back(eta*l/2); 
+    b.push_back(eta*l/2);
 
     return b;
 }
@@ -139,11 +136,12 @@ void assemblyK(element e,Matrix localK,Matrix &K,int nnodes){
     K.at(index3).at(index2) += localK.at(2).at(1);
     K.at(index4).at(index1) += localK.at(3).at(0);
     K.at(index4).at(index2) += localK.at(3).at(1);
-
+    
     K.at(index3).at(index3) += localK.at(2).at(2);
     K.at(index3).at(index4) += localK.at(2).at(3);
     K.at(index4).at(index3) += localK.at(3).at(2);
     K.at(index4).at(index4) += localK.at(3).at(3);
+
 
 }
 
@@ -181,6 +179,7 @@ void applyDirichlet(mesh &m,Matrix &K,Vector &b){
         }
     }
 }
+
 
 void calculate(Matrix &K, Vector &b, Vector &T){
     cout << "Iniciando calculo de respuesta...\n";
